@@ -808,7 +808,7 @@ class GpxFile : GpxExtensions {
 	}
 
 	fun isShowStartFinish(): Boolean {
-		return isShowStartFinish(true)
+		return isShowStartFinish(false)
 	}
 
 	fun isShowStartFinish(defaultValue: Boolean): Boolean {
