@@ -41,7 +41,7 @@ enum class GpxParameter(
 	SHOW_AS_MARKERS("showAsMarkers", "int", Boolean::class, false, false),
 	JOIN_SEGMENTS("joinSegments", "int", Boolean::class, false, false),
 	SHOW_ARROWS("showArrows", "int", Boolean::class, false, false),
-	SHOW_START_FINISH("showStartFinish", "int", Boolean::class, true, false),
+	SHOW_START_FINISH("showStartFinish", "int", Boolean::class, false, false),
 	TRACK_VISUALIZATION_TYPE("track_visualization_type", "TEXT", String::class, "none", false),
 	TRACK_3D_WALL_COLORING_TYPE("track_3d_wall_coloring_type", "TEXT", String::class, "none", false),
 	TRACK_3D_LINE_POSITION_TYPE("track_3d_line_position_type", "TEXT", String::class, "top", false),

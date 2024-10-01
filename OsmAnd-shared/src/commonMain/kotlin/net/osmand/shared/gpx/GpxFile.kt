@@ -706,7 +706,7 @@ class GpxFile : GpxExtensions {
 	}
 
 	fun isShowStartFinish(): Boolean {
-		return extensions?.get("show_start_finish")?.toBoolean() ?: true
+		return extensions?.get("show_start_finish")?.toBoolean() ?: false
 	}
 
 	fun setShowStartFinish(showStartFinish: Boolean) {
