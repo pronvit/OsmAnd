@@ -86,6 +86,7 @@ class GpxReader(private val adapter: GpxReaderAdapter)
 		if (gpxFile.error == null) {
 			updatedItem.setAnalysis(gpxFile.getAnalysis(file.lastModified(), null, null, analyser,
 				collectPointData = false))
+			updatedItem.readGpxParams(gpxFile);
 			if (!updatedItem.isRegularTrack()) {
 				return updatedItem
 			}
