@@ -16,17 +16,29 @@ import co.touchlab.sqliter.withStatement
 import co.touchlab.sqliter.interop.SQLiteException
 import net.osmand.shared.api.SQLiteAPI.*
 import okio.Path.Companion.toPath
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSSearchPathForDirectoriesInDomains
+import platform.Foundation.NSUserDomainMask
 
 class SQLiteAPIImpl : SQLiteAPI {
 
 	private lateinit var databaseManager: DatabaseManager
 
+	@OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
 	override fun getOrCreateDatabase(name: String, readOnly: Boolean): SQLiteConnection {
+        val paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, true);
+        val documentsDirectory = paths[0] as String;
+        val dbsPath = "$documentsDirectory/databases"
+        val fileManager = NSFileManager.defaultManager()
+        if (!fileManager.fileExistsAtPath(dbsPath))
+            fileManager.createDirectoryAtPath(dbsPath, true, null, null);
+
 		val configuration = DatabaseConfiguration(name = name, version = NO_VERSION_CHECK, create = { db ->
 			// No-op: example creation logic
 		}, upgrade = { db, oldVersion, newVersion ->
 			// No-op: example upgrade logic
-		})
+		}, extendedConfig = DatabaseConfiguration.Extended(basePath = dbsPath))
 		databaseManager = createDatabaseManager(configuration)
 		val ds = databaseManager.createMultiThreadedConnection()
 		return SQLiteDatabaseWrapper(ds)
