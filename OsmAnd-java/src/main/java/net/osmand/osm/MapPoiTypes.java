@@ -7,6 +7,7 @@ import net.osmand.osm.edit.OsmMapUtils;
 import net.osmand.util.Algorithms;
 
 import org.apache.commons.logging.Log;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectBooleanHashMap;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -1057,21 +1058,23 @@ public class MapPoiTypes {
 		return pt;
 	}
 
+	ObjectBooleanHashMap<String> isTextAdditionalInfos = new ObjectBooleanHashMap<String>();
 	public boolean isTextAdditionalInfo(String key, String value) {
 		if (key.startsWith("name:") || key.equals("name")) {
 			return true;
 		}
-		PoiType pat = (PoiType) getAnyPoiAdditionalTypeByKey(key);
+		return isTextAdditionalInfos.getIfAbsentPut(key, ()->{
+			PoiType pat = (PoiType) getAnyPoiAdditionalTypeByKey(key);
 //		initPoiTypesByTag();
 //		PoiType pat = poiTypesByTag.get(key + "/" + value);
 //		if (pat == null) {
 //			pat = poiTypesByTag.get(key);
 //		}
-		if (pat == null) {
-			return true;
-		} else {
-			return pat.isText();
-		}
+			if (pat == null)
+				return true;
+			else
+				return pat.isText();
+		});
 	}
 
 	public void setForbiddenTypes(Set<String> forbiddenTypes) {
