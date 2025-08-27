@@ -2,6 +2,7 @@ package net.osmand.data;
 
 import gnu.trove.map.hash.TLongObjectHashMap;
 import net.osmand.util.MapUtils;
+import org.eclipse.collections.impl.map.mutable.primitive.LongObjectHashMap;
 
 import java.util.*;
 
@@ -11,7 +12,7 @@ import java.util.*;
 public class DataTileManager<T> {
 
 	private final int zoom;
-	private final TLongObjectHashMap<List<T>> objects = new TLongObjectHashMap<>();
+	private final LongObjectHashMap<List<T>> objects = new LongObjectHashMap<>();
 
 	public DataTileManager() {
 		zoom = 15;
@@ -26,12 +27,17 @@ public class DataTileManager<T> {
 	}
 
 	public boolean isEmpty() {
-		return getObjectsCount() == 0;
+		for (List<T> s : objects.values()) {
+			if (!s.isEmpty())
+				return false;
+		}
+
+		return true;
 	}
 
 	public int getObjectsCount() {
 		int x = 0;
-		for (List<T> s : objects.valueCollection()) {
+		for (List<T> s : objects.values()) {
 			x += s.size();
 		}
 		return x;
@@ -39,7 +45,7 @@ public class DataTileManager<T> {
 	
 	public void printStatsDistribution(String name) {
 		int min = -1, max = -1, total = 0;
-		for (List<T> l : objects.valueCollection()) {
+		for (List<T> l : objects.values()) {
 			if (min == -1) {
 				max = min = l.size();
 			} else {
@@ -67,7 +73,7 @@ public class DataTileManager<T> {
 	}
 
 	public List<List<T>> getAllEditObjects() {
-		return new ArrayList<>(objects.valueCollection());
+		return new ArrayList<>(objects.values());
 	}
 
 	public List<T> getObjects(double latitudeUp, double longitudeUp, double latitudeDown, double longitudeDown) {

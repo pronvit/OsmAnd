@@ -31,6 +31,8 @@ import net.osmand.data.Amenity;
 import net.osmand.osm.edit.OsmMapUtils;
 import net.osmand.util.Algorithms;
 
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectBooleanHashMap;
+
 
 public class MapPoiTypes {
 	public static final String OTHER_MAP_CATEGORY = "Other";
@@ -1145,21 +1147,23 @@ public class MapPoiTypes {
         return defaultPoiTypesByTag.get(tag);
 	}
 
+	ObjectBooleanHashMap<String> isTextAdditionalInfos = new ObjectBooleanHashMap<String>();
 	public boolean isTextAdditionalInfo(String key, String value) {
 		if (key.startsWith("name:") || key.equals("name")) {
 			return true;
 		}
-		PoiType pat = (PoiType) getAnyPoiAdditionalTypeByKey(key);
+		return isTextAdditionalInfos.getIfAbsentPut(key, ()->{
+			PoiType pat = (PoiType) getAnyPoiAdditionalTypeByKey(key);
 //		initPoiTypesByTag();
 //		PoiType pat = poiTypesByTag.get(key + "/" + value);
 //		if (pat == null) {
 //			pat = poiTypesByTag.get(key);
 //		}
-		if (pat == null) {
-			return true;
-		} else {
-			return pat.isText();
-		}
+			if (pat == null)
+				return true;
+			else
+				return pat.isText();
+		});
 	}
 
 	public void setForbiddenTypes(Set<String> forbiddenTypes) {
