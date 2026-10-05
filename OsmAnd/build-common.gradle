@@ -140,7 +140,7 @@ tasks.register('validateTranslations') {
 	def pattern = /%(\d+\$)?[sSdD]/
 	def files = ["strings.xml", "phrases.xml"]
 	def defaultPlaceholders = [:]
-	def parser = new XmlParser()
+	def parser = new groovy.xml.XmlParser()
 
 	def normalizePlaceholders = { placeholders -> placeholders.collect { it.toLowerCase() }.toSet() }
 
