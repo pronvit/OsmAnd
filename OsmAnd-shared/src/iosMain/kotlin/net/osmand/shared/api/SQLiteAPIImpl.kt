@@ -16,6 +16,10 @@ import co.touchlab.sqliter.interop.SQLiteException
 import net.osmand.shared.api.SQLiteAPI.*
 import net.osmand.shared.util.LoggerFactory
 import okio.Path.Companion.toPath
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSSearchPathForDirectoriesInDomains
+import platform.Foundation.NSUserDomainMask
 
 class SQLiteAPIImpl : SQLiteAPI {
 
@@ -23,9 +27,16 @@ class SQLiteAPIImpl : SQLiteAPI {
 		private val log = LoggerFactory.getLogger("SQLiteAPIImpl")
 	}
 
+	@OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
 	override fun getOrCreateDatabase(name: String, readOnly: Boolean): SQLiteConnection? {
 		return try {
-			open(name, null)
+			val paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, true);
+			val documentsDirectory = paths[0] as String;
+			val dbsPath = "$documentsDirectory/databases"
+			val fileManager = NSFileManager.defaultManager()
+			if (!fileManager.fileExistsAtPath(dbsPath))
+				fileManager.createDirectoryAtPath(dbsPath, true, null, null);
+			open(name, dbsPath)
 		} catch (e: SQLiteException) {
 			log.error("Failed to get or create database $name", e)
 			null
